@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Family recipe box with filters for cuisine, diet, and healthy meals." />
+    <title>Family Recipe Box</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;1,9..40,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("recipe-box-theme");
+          if (t) document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to recipes</a>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <h1 class="site-title">Family Recipe Box</h1>
+        <p class="site-tagline">
+          Search, filter by cuisine and diet, save favourites. Press <kbd>/</kbd> to search.
+        </p>
+        <button type="button" class="btn btn--ghost" id="theme-toggle" aria-pressed="false">Dark mode</button>
+      </div>
+    </header>
+
+    <div class="toolbar" role="search" aria-label="Recipe filters">
+      <div class="toolbar__row">
+        <label class="field">
+          Search
+          <input type="search" id="search" placeholder="Title, ingredient, tag…" autocomplete="off" />
+        </label>
+        <label class="field">
+          Cuisine
+          <select id="cuisine" aria-label="Filter by cuisine">
+            <option value="">All cuisines</option>
+          </select>
+        </label>
+        <label class="field">
+          Diet / protein
+          <select id="diet" aria-label="Filter by diet or protein type">
+            <option value="">All recipes</option>
+            <optgroup label="Plant-based">
+              <option value="vegan">Vegan only</option>
+              <option value="veg">Vegetarian &amp; vegan</option>
+            </optgroup>
+            <optgroup label="Animal protein">
+              <option value="chicken">Chicken</option>
+              <option value="fish">Fish</option>
+              <option value="lamb">Lamb</option>
+              <option value="goat">Goat</option>
+              <option value="pork">Pork</option>
+              <option value="duck">Duck</option>
+              <option value="shellfish">Shellfish</option>
+              <option value="mixed">Mixed / other meat</option>
+            </optgroup>
+          </select>
+        </label>
+        <button type="button" class="btn" id="clear-filters">Clear filters</button>
+      </div>
+      <div class="toggle-group">
+        <label class="toggle">
+          <input type="checkbox" id="healthy-only" />
+          Healthy picks only
+        </label>
+        <label class="toggle">
+          <input type="checkbox" id="favorites-only" />
+          Saved favourites only
+        </label>
+      </div>
+    </div>
+
+    <p class="meta-bar" id="result-count" aria-live="polite"></p>
+
+    <main id="main">
+      <div class="recipe-grid" id="recipe-grid"></div>
+    </main>
+
+    <div
+      class="modal-overlay"
+      id="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      hidden
+    >
+      <div class="modal">
+        <div class="modal__header">
+          <h2 id="modal-title" class="modal__title"></h2>
+          <button type="button" class="modal__close" id="modal-close" aria-label="Close recipe">×</button>
+        </div>
+        <div class="modal__body">
+          <div class="servings-control">
+            <label id="servings-label" for="servings-input">Portions</label>
+            <input type="number" id="servings-input" min="1" max="24" step="1" value="4" />
+            <span class="recipe-card__meta">Gram amounts scale with portions (approximate).</span>
+          </div>
+          <div id="modal-body"></div>
+        </div>
+        <div class="modal__footer">
+          <button type="button" class="btn btn--primary" id="modal-print">Print this recipe</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="data/recipes.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
