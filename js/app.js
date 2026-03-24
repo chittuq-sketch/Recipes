@@ -2,6 +2,9 @@
   "use strict";
 
   const recipes = window.RECIPES || [];
+  const weekPlan = window.WEEK_PLAN || null;
+  let activeTab = "recipes";
+
   const els = {
     search: document.getElementById("search"),
     cuisine: document.getElementById("cuisine"),
@@ -19,11 +22,25 @@
     modalPrint: document.getElementById("modal-print"),
     servingsInput: document.getElementById("servings-input"),
     servingsLabel: document.getElementById("servings-label"),
+    tabBtnRecipes: document.getElementById("tab-btn-recipes"),
+    tabBtnWeek: document.getElementById("tab-btn-week"),
+    tabBtnShop: document.getElementById("tab-btn-shop"),
+    panelRecipes: document.getElementById("panel-recipes"),
+    panelWeek: document.getElementById("panel-week"),
+    panelShop: document.getElementById("panel-shop"),
+    weekPlanIntro: document.getElementById("week-plan-intro"),
+    weekRangeLabel: document.getElementById("week-range-label"),
+    weekPlanTable: document.getElementById("week-plan-table"),
+    shopIntro: document.getElementById("shop-intro"),
+    shoppingListRoot: document.getElementById("shopping-list-root"),
+    resetShopBtn: document.getElementById("reset-shop"),
   };
 
   const FAV_KEY = "recipe-box-favorites";
   const THEME_KEY = "recipe-box-theme";
   const PRINT_RECIPE_CLASS = "print-recipe-only";
+  const PRINT_WEEK_CLASS = "print-week-only";
+  const PRINT_SHOP_CLASS = "print-shop-only";
 
   function loadFavorites() {
     try {
@@ -156,6 +173,147 @@
     const div = document.createElement("div");
     div.textContent = s;
     return div.innerHTML;
+  }
+
+  function getWeekStartMonday() {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    const day = d.getDay();
+    if (day === 0) d.setDate(d.getDate() + 1);
+    else if (day !== 1) d.setDate(d.getDate() + (8 - day));
+    return d;
+  }
+
+  function addDays(date, n) {
+    const x = new Date(date);
+    x.setDate(x.getDate() + n);
+    return x;
+  }
+
+  function formatWeekKey(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  }
+
+  function fmtShort(d) {
+    return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+  }
+
+  function getShopStorageKey() {
+    if (!weekPlan) return null;
+    return `recipe-box-shop-${formatWeekKey(getWeekStartMonday())}-v${weekPlan.planVersion}`;
+  }
+
+  function loadShopChecked() {
+    const key = getShopStorageKey();
+    if (!key) return {};
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function saveShopChecked(obj) {
+    const key = getShopStorageKey();
+    if (!key) return;
+    localStorage.setItem(key, JSON.stringify(obj));
+  }
+
+  function renderWeekPlan() {
+    if (!weekPlan || !els.weekPlanTable) return;
+    if (els.weekPlanIntro) {
+      els.weekPlanIntro.textContent = `${weekPlan.note} Serves ${weekPlan.servings}.`;
+    }
+    const start = getWeekStartMonday();
+    if (els.weekRangeLabel) {
+      const end = addDays(start, 5);
+      els.weekRangeLabel.textContent = `Week: ${fmtShort(start)} (Mon) – ${fmtShort(end)} (Sat)`;
+    }
+    let html =
+      '<table class="week-table"><thead><tr><th scope="col">Day</th><th scope="col">Meat / fish / lamb</th><th scope="col">Vegetarian / vegan</th><th scope="col">Open in app</th></tr></thead><tbody>';
+    weekPlan.days.forEach((row, i) => {
+      const d = addDays(start, i);
+      html += `<tr>
+        <td><span class="day-name">${escapeHtml(row.day)}</span><span class="day-date">${escapeHtml(fmtShort(d))}</span></td>
+        <td>${escapeHtml(row.meat.short)}</td>
+        <td>${escapeHtml(row.veg.short)}</td>
+        <td class="week-cell-actions">
+          <button type="button" class="btn btn--primary open-recipe" data-id="${escapeHtml(row.meat.recipeId)}">Meat line</button>
+          <button type="button" class="btn open-recipe" data-id="${escapeHtml(row.veg.recipeId)}">Veg line</button>
+        </td>
+      </tr>`;
+      if (row.tip) {
+        html += `<tr class="week-tip-row"><td colspan="4"><p class="week-tip">${escapeHtml(row.tip)}</p></td></tr>`;
+      }
+    });
+    html += "</tbody></table>";
+    els.weekPlanTable.innerHTML = html;
+    els.weekPlanTable.querySelectorAll(".open-recipe").forEach((btn) => {
+      btn.addEventListener("click", () => openModal(btn.getAttribute("data-id")));
+    });
+  }
+
+  function renderShoppingList() {
+    if (!els.shoppingListRoot || !weekPlan) return;
+    const checked = loadShopChecked();
+    if (els.shopIntro) {
+      els.shopIntro.textContent = `Tick items as you buy them. Progress is saved for the week of ${formatWeekKey(getWeekStartMonday())} on this device.`;
+    }
+    const byCat = {};
+    weekPlan.shopping.forEach((item) => {
+      if (!byCat[item.category]) byCat[item.category] = [];
+      byCat[item.category].push(item);
+    });
+    let html = "";
+    Object.keys(byCat).forEach((cat) => {
+      html += `<div class="shop-category"><h3>${escapeHtml(cat)}</h3><ul class="shop-list">`;
+      byCat[cat].forEach((item) => {
+        const isChecked = !!checked[item.id];
+        html += `<li><label>
+          <input type="checkbox" data-shop-id="${escapeHtml(item.id)}" ${isChecked ? "checked" : ""} />
+          <span>${escapeHtml(item.text)}</span>
+        </label></li>`;
+      });
+      html += "</ul></div>";
+    });
+    els.shoppingListRoot.innerHTML = html;
+    els.shoppingListRoot.querySelectorAll("input[data-shop-id]").forEach((input) => {
+      input.addEventListener("change", () => {
+        const id = input.getAttribute("data-shop-id");
+        const cur = loadShopChecked();
+        if (input.checked) cur[id] = true;
+        else delete cur[id];
+        saveShopChecked(cur);
+      });
+    });
+  }
+
+  function setTab(tab) {
+    activeTab = tab;
+    const isRecipes = tab === "recipes";
+    const isWeek = tab === "week";
+    const isShop = tab === "shop";
+    if (els.panelRecipes) els.panelRecipes.hidden = !isRecipes;
+    if (els.panelWeek) els.panelWeek.hidden = !isWeek;
+    if (els.panelShop) els.panelShop.hidden = !isShop;
+    if (els.tabBtnRecipes) {
+      els.tabBtnRecipes.setAttribute("aria-selected", String(isRecipes));
+      els.tabBtnRecipes.tabIndex = isRecipes ? 0 : -1;
+    }
+    if (els.tabBtnWeek) {
+      els.tabBtnWeek.setAttribute("aria-selected", String(isWeek));
+      els.tabBtnWeek.tabIndex = isWeek ? 0 : -1;
+    }
+    if (els.tabBtnShop) {
+      els.tabBtnShop.setAttribute("aria-selected", String(isShop));
+      els.tabBtnShop.tabIndex = isShop ? 0 : -1;
+    }
+    if (isWeek) renderWeekPlan();
+    if (isShop) renderShoppingList();
   }
 
   function renderGrid(list) {
@@ -338,7 +496,11 @@
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && els.modal && !els.modal.hidden) closeModal();
-    if (e.key === "/" && document.activeElement !== els.search) {
+    if (
+      e.key === "/"
+      && activeTab === "recipes"
+      && document.activeElement !== els.search
+    ) {
       e.preventDefault();
       if (els.search) els.search.focus();
     }
@@ -352,14 +514,30 @@
   }
 
   window.addEventListener("beforeprint", () => {
+    document.documentElement.classList.remove(PRINT_RECIPE_CLASS, PRINT_WEEK_CLASS, PRINT_SHOP_CLASS);
     if (els.modal && !els.modal.hidden) {
       document.documentElement.classList.add(PRINT_RECIPE_CLASS);
+      return;
     }
+    if (activeTab === "week") document.documentElement.classList.add(PRINT_WEEK_CLASS);
+    else if (activeTab === "shop") document.documentElement.classList.add(PRINT_SHOP_CLASS);
   });
 
   window.addEventListener("afterprint", () => {
-    document.documentElement.classList.remove(PRINT_RECIPE_CLASS);
+    document.documentElement.classList.remove(PRINT_RECIPE_CLASS, PRINT_WEEK_CLASS, PRINT_SHOP_CLASS);
   });
+
+  if (els.tabBtnRecipes) els.tabBtnRecipes.addEventListener("click", () => setTab("recipes"));
+  if (els.tabBtnWeek) els.tabBtnWeek.addEventListener("click", () => setTab("week"));
+  if (els.tabBtnShop) els.tabBtnShop.addEventListener("click", () => setTab("shop"));
+
+  if (els.resetShopBtn) {
+    els.resetShopBtn.addEventListener("click", () => {
+      const key = getShopStorageKey();
+      if (key) localStorage.removeItem(key);
+      renderShoppingList();
+    });
+  }
 
   populateCuisineFilter();
   setTheme(getTheme());
