@@ -1,11 +1,61 @@
-Category,Item,Quantity
-Fruits,Apples,4
-Fruits,Bananas,6
-Vegetables,Carrots,5
-Vegetables,Spinach,2
-Dairy,Milk,2L
-Dairy,Yogurt,1
-Proteins,Chicken Fillets,1kg
-Proteins,Tofu,500g
-Grains,Rice,2kg
-Grains,Whole Wheat Bread,1
+Category,Item,Quantity,Notes
+Produce,Brown or red onions,several,for various dishes
+Produce,Garlic,2 heads,marinade and cooking
+Produce,Ginger knob,1,curry and stir-fry
+Produce,Lemons and limes,mixed,dressing and cooking
+Produce,Fresh chili,optional,stir-fry and dressing
+Produce,Cucumbers,2-3,salads and wraps
+Produce,Tomatoes,600g+,salads and wraps
+Produce,Lettuce or mixed leaves,handful,salads and wraps
+Produce,Carrots,several,noodle bowls and salads
+Produce,Spring onions,bunch,garnish
+Produce,Fresh mint,bunch,Vietnamese bowls
+Produce,Fresh cilantro,bunch,Vietnamese bowls
+Produce,Fresh basil,bunch,pizza and stir-fry
+Produce,Fresh parsley,bunch,wraps and bowls
+Produce,Spinach bags,bags,curry and udon
+Produce,Bok choy or greens,200g,udon
+Produce,Cabbage,optional,tacos
+Produce,Bell peppers,2,sheet-pan bowls
+Produce,Zucchini,1-2,sheet-pan bowls
+Produce,Avocado,1,tacos
+Produce,Potatoes or extra salad veg,optional,sides
+Meat & Fish,Chicken thighs or breast,1.2-1.5kg,two chicken nights
+Meat & Fish,Salmon fillets,4-5 portions,Tuesday dinner
+Meat & Fish,Minced lamb,900g-1kg,kofta + stir-fry + sheet-pan
+Meat & Fish,Lamb shoulder pieces or strips,400g,sheet-pan bowls
+Dairy & Eggs,Plain yogurt,500g+,wraps and bowls
+Dairy & Eggs,Mozzarella,150g,pizza
+Dairy & Eggs,Halloumi,optional,salmon night substitute
+Dairy & Eggs,Eggs,optional,udon night
+Pantry,Rice vermicelli,400g,Vietnamese bowls
+Pantry,Udon noodles,2 servings,Japanese soup
+Pantry,Rice,200g,stir-fry base
+Pantry,Couscous,optional,serving option
+Pantry,Quinoa,200g,salmon night
+Pantry,Tinned chickpeas,2 tins,curry + optional roasting
+Pantry,Tinned black beans,2 tins,tacos
+Pantry,Tinned lentils,2 cans,lentil wraps
+Pantry,Pitas or wraps,4,wraps
+Pantry,Small tortillas,8,tacos
+Pantry,Pizza dough ball,1,pizza night
+Pantry,Coconut milk,1 tin,curry
+Pantry,Olive oil,1 bottle,cooking + dressing
+Pantry,Neutral oil,1 bottle,frying and stir-fry
+Pantry,Sesame oil,small,Asian dishes
+Pantry,Stock cubes or vegetable stock,cubes/carton,broths
+Pantry,Soy sauce,1 bottle,marinades and sauces
+Pantry,Fish sauce,1 bottle,Vietnamese and Thai dishes
+Pantry,Miso paste,1 jar,udon broth
+Pantry,Curry powder or garam masala,1,curry
+Pantry,Ground cumin,1,spice blend
+Pantry,Ground coriander,1,spice blend
+Pantry,Paprika,1,spice blend
+Pantry,Turmeric,1,spice blend
+Pantry,Brown sugar,1 box,marinades
+Pantry,Tomato passata or crushed tomatoes,1 jar,pizza sauce
+Pantry,Salsa,1 jar,tacos
+Fridge & Tofu,Firm tofu,500g+,tofu bowl
+Fridge & Tofu,Tempeh,optional,substitute
+Fridge & Tofu,Butter,optional,pizza enhancement
+Fridge & Tofu,Extra cheese,optional,pizza enhancement
