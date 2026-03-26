@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Price Comparison</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .summary {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Shopping Price Comparison: Coles vs Woolworths</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Item Name</th>
+                <th>Coles Price ($)</th>
+                <th>Woolworths Price ($)</th>
+                <th>Difference ($)</th>
+                <th>Cheaper At</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td rowspan="4">Produce</td>
+                <td>Apples</td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Bananas</td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Carrots</td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Tomatoes</td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td rowspan="3">Meat & Fish</td>
+                <td>Chicken Breast</td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Salmon</td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Ground Beef</td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td rowspan="3">Dairy & Eggs</td>
+                <td>Milk</td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Cheese</td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Eggs</td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td rowspan="2">Pantry</td>
+                <td>Rice</td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Pasta</td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td><input type="number" value="0" step="0.01" /></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="summary">
+        <p>Total Coles Price: $<span id="total-coles">0.00</span></p>
+        <p>Total Woolworths Price: $<span id="total-woolworths">0.00</span></p>
+        <p>Total Savings: $<span id="total-savings">0.00</span></p>
+    </div>
+    <script>
+        const inputs = document.querySelectorAll('input[type="number"]');
+        inputs.forEach(input => {
+            input.addEventListener('input', updateTotals);
+        });
+
+        function updateTotals() {
+            let totalColes = 0;
+            let totalWoolworths = 0;
+
+            inputs.forEach(input => {
+                const price = parseFloat(input.value) || 0;
+                if (input.parentElement.cellIndex === 2) { // Coles Price
+                    totalColes += price;
+                } else if (input.parentElement.cellIndex === 3) { // Woolworths Price
+                    totalWoolworths += price;
+                }
+            });
+
+            document.getElementById('total-coles').textContent = totalColes.toFixed(2);
+            document.getElementById('total-woolworths').textContent = totalWoolworths.toFixed(2);
+            document.getElementById('total-savings').textContent = (totalWoolworths - totalColes).toFixed(2);
+        }
+    </script>
+</body>
+</html>
